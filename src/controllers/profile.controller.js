@@ -14,3 +14,34 @@ export function getPrivateProfile(req, res) {
     userData: user,
   });
 }
+export async function updateProfile(req, res) {
+
+  try{
+    const userID = req.user.id;
+    const { email, password } = req.body;
+
+    const user = await user.findById(userID);
+      if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      user.email = email || user.email;
+      user.password = password || user.password;
+
+
+      await user.save();
+
+      res.status(200).json({ message: "Perfil actualizado exitosamente", user });
+
+  }catch(error){
+    res.status(500).json({ message: "Error al actualizar perfil", error });
+  }
+}
+
+export async function deleteProfile(req, res) {
+  try{
+
+  }catch(error){
+    
+  }
+}

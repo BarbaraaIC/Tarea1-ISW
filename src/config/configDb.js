@@ -1,13 +1,13 @@
 "use strict";
 import { DataSource } from "typeorm";
-import { DATABASE, DB_USERNAME, HOST, PASSWORD, DB_PORT } from "./configEnv.js";
+import { DATABASE, DB_USERNAME, DB_HOST, DB_PASSWORD, DB_PORT } from "./configEnv.js";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: `${HOST}`,
+  host: DB_HOST,
   port: DB_PORT,
   username: `${DB_USERNAME}`,
-  password: `${PASSWORD}`,
+  password: `${DB_PASSWORD}`,
   database: `${DATABASE}`,
   entities: ["src/entities/**/*.js"],
   synchronize: true, 
