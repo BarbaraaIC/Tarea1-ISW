@@ -13,7 +13,7 @@ router.get("/public", getPublicProfile);
 
 router.get("/private", authMiddleware, getPrivateProfile);
 
-router.patch("/private", authMiddleware, updateProfile);
-router.delete("/private", authMiddleware, deleteProfile);
+router.patch("/private/update", authMiddleware, updateProfile);
+router.delete("/private/delete", authMiddleware, deleteProfile);
 
 export default router;

@@ -1,4 +1,7 @@
+
 import { handleSuccess } from "../Handlers/responseHandlers.js";
+import { User } from "../entities/user.entity.js";
+import { AppDataSource } from "../config/configDb.js";
 
 export function getPublicProfile(req, res) {
   handleSuccess(res, 200, "Perfil público obtenido exitosamente", {
@@ -14,34 +17,56 @@ export function getPrivateProfile(req, res) {
     userData: user,
   });
 }
-export async function updateProfile(req, res) {
 
-  try{
+export async function updateProfile(req, res) {
+    try{
     const userID = req.user.id;
     const { email, password } = req.body;
 
-    const user = await user.findById(userID);
-      if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      if (!email && !password) {
+      return res.status(404).json({ message: "Debes colocar que quieres actualizar" });
+      }
+      const userRepository = AppDataSource.getRepository(User);
+      const user = await userRepository.findOneBy({ id: userID });
+
+      if(!user){
+        return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
-      user.email = email || user.email;
-      user.password = password || user.password;
+      if(email && email !== user.email){
+        const emailExiste = await userRepository.findOneBy({ email });
+        if(emailExiste){
+          return res.status(409).json({ message: "El email ya está en uso" });
+        }
+        user.email = email;
+      }
 
-
-      await user.save();
-
+      if(password){
+        user.password = password;
+      }
+      await userRepository.save(user);
       res.status(200).json({ message: "Perfil actualizado exitosamente", user });
 
   }catch(error){
+    console.error(error);
     res.status(500).json({ message: "Error al actualizar perfil", error });
   }
 }
-
 export async function deleteProfile(req, res) {
   try{
+    const userID = req.user.id;
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOneBy({ id: userID });
+
+    if(!user){
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    await userRepository.remove(user);
+    res.status(200).json({ message: "Perfil eliminado exitosamente" });
 
   }catch(error){
-    
+    res.status(500).json({ message: "Error al eliminar perfil", error });
+
   }
 }
