@@ -1,5 +1,5 @@
 
-import { handleSuccess } from "../Handlers/responseHandlers.js";
+import { handleErrorClient, handleErrorServer, handleSuccess } from "../Handlers/responseHandlers.js";
 import { User } from "../entities/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 
@@ -24,7 +24,7 @@ export async function updateProfile(req, res) {
     const { email, password } = req.body;
 
       if (!email && !password) {
-      return res.status(404).json({ message: "Debes colocar que quieres actualizar" });
+      return res.status(400).json({ message: "Debes colocar que quieres actualizar" });
       }
       const userRepository = AppDataSource.getRepository(User);
       const user = await userRepository.findOneBy({ id: userID });
@@ -54,19 +54,19 @@ export async function updateProfile(req, res) {
 }
 export async function deleteProfile(req, res) {
   try{
-    const userID = req.user.id;
     const userRepository = AppDataSource.getRepository(User);
+    const userID = req.user.sub;
     const user = await userRepository.findOneBy({ id: userID });
 
     if(!user){
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return handleErrorClient(res, 404, "Usuario no encontrado");
     }
 
     await userRepository.remove(user);
-    res.status(200).json({ message: "Perfil eliminado exitosamente" });
+    handleSuccess( res, 200, "Perfil eliminado exitosamente");
 
   }catch(error){
-    res.status(500).json({ message: "Error al eliminar perfil", error });
+    handleErrorServer(res, 200, "Error al eliminar perfil");
 
   }
 }
