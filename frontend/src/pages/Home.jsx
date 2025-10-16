@@ -1,10 +1,29 @@
 import { useState } from 'react';
+import {dotenv} from 'dotenv';
+
 
 const Home = () => {
+  const apiUrl = import.meta.env.VITE_BASE_URL;
   const [profileData, setProfileData] = useState(null);
 
   const handleGetProfile = async () => {
-    console.log('Obtener perfil');
+    try {
+    const response = await fetch( apiUrl + "/profile/private", {
+      method: "GET",
+      headers: {
+      "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // el token guardado al iniciar sesión
+      },
+    });
+
+  const text = await response.text();
+  const data = JSON.parse(text); 
+  setProfileData(data.data); 
+  console.log("Datos del perfil obtenidos:", data.data);
+
+  } catch (error) {
+    console.error("Error al obtener perfil:", error.message);
+  }
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 flex items-center justify-center p-4">

@@ -8,14 +8,19 @@ const Login = () => {
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         const response = await login({ email, password });
         if(response.status === "Success"){
+        localStorage.setItem("token", response.data.token);
             navigate('/home');
         }else{
             alert(response.message || 'Usuario o contraseña incorrectos');
         }
-    };    return (
+
+    }; 
+
+    return (
         <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 w-full max-w-md transform transition-all hover:scale-105">
                 <form className="space-y-6" onSubmit={handleSubmit}>
