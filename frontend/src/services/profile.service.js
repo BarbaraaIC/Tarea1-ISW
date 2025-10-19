@@ -12,7 +12,9 @@ export async function getProfile() {
 export async function editProfile(){
     try{
         const response = await axios.patch('/profile/private');
+        return response.data;
     }catch(error){
+        return error.response?.data || { message: 'Error al editar perfil' };
 
     }
 }
@@ -20,8 +22,8 @@ export async function editProfile(){
 export async function deleteProfile(){
     try{
         const response = await axios.delete('/profile/private');
-
+        return response.data;
     }catch(error){
-
+        return error.response?.data || { message: 'Error al eliminar perfil' };
     }
 }
