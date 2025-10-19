@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import EditarPerfil from '@hooks/usuarios/editUser';
+import  EditarPerfil  from '@hooks/usuarios/editUser';
 import { deleteUser } from '@hooks/usuarios/deleteUser';
 
 const Home = () => {
@@ -26,19 +26,20 @@ const Home = () => {
     }
   };
 
-  const handleEditSuccess = (updatedUser) => {
-    setProfileData(updatedUser);
-    setShowEdit(false);
-  };
+
+const handleEditUser = (updatedData) => {
+  setProfileData(updatedData); // actualiza el estado con los nuevos datos
+  setShowEdit(false); // oculta el formulario de edición
+};
 
   const handleDelete = async () => {
     if (!profileData) return;
     try {
       await deleteUser(profileData.id || profileData._id || profileData.correo);
       setProfileData(null);
-      alert('Perfil eliminado');
-    } catch (err) {
-      console.error('Error al eliminar:', err);
+      alert("Perfil eliminado");
+    } catch (error) {
+      console.error("Error al eliminar perfil:", error);
       alert('No se pudo eliminar el perfil');
     }
   };
@@ -54,13 +55,14 @@ const Home = () => {
           Obtener Perfil
         </button>
 
+
         <div className="flex gap-4">
           <button
-            onClick={() => setShowEdit(true)}
-            disabled={!profileData}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
+          onClick={handleEditUser}
+          className="flex-1 bg-red-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
+          disabled={!profileData}
           >
-            Editar Perfil
+          Editar Perfil
           </button>
 
           <button

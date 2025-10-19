@@ -1,39 +1,29 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState} from 'react';
 
-const EditarPerfil = ({ user }) => {
-const [formData, setFormData] = useState({
-    correo: user?.correo || '',
-    password: user?.password || '',
-});
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [loading, setLoading] = useState(false);
+const EditarPerfil = () => {
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const handleEditUser = (userData) => {
-    setFormData({
-        correo: userData.correo,
-        password: userData.password,
-    });
-    setError('');
-    setSuccess('');
-    };
 
-    const editUser = async () => {
-    setLoading(true);
+
+  const handleEditUser = async () => {
     try {
-      const response = await axios.patch('/profile/private', formData);
+      const response = await fetch(apiUrl + "/profile/private", {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(profileData),
+      });
 
-        if (response.status === 200) {
-        setSuccess('Perfil actualizado correctamente');
-        setError('');
-        } else {
-        setError('Hubo un problema al actualizar el perfil');
-        setSuccess('');
-        }
+      const text = await response.text();
+      const data = JSON.parse(text);
+      setProfileData(data.data);
+      console.log("Perfil editado:", data.data);
     } catch (error) {
-        console.log('Error al conectar con el servidor', error);
-        setSuccess('');
+      console.log("Error al conectar con el servidor", error.message);
     }
   };
 
@@ -44,29 +34,25 @@ const [formData, setFormData] = useState({
       <label className="block mb-2 font-medium">Correo</label>
       <input
         type="email"
-        value={formData.correo}
-        onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
+        value={email}
+        onChange={(e) => setEmail(e.target.value )}
         className="w-full p-3 border rounded-lg mb-4"
       />
 
       <label className="block mb-2 font-medium">Contraseña</label>
       <input
         type="password"
-        value={formData.password}
-        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         className="w-full p-3 border rounded-lg mb-4"
       />
 
       <button
-        onClick={editUser}
-        disabled={loading}
+        onClick={handleEditUser}
         className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300"
       >
-        {loading ? 'Actualizando...' : 'Editar Perfil'}
+        Editar Perfil
       </button>
-
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {success && <p className="text-green-500 mt-4">{success}</p>}
     </div>
   );
 };
