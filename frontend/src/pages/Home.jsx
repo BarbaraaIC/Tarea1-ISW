@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import  EditarPerfil  from '@hooks/usuarios/editUser';
+import EditarPerfil from '@hooks/usuarios/editUser';
 import { deleteUser } from '@hooks/usuarios/deleteUser';
 
 const Home = () => {
@@ -26,11 +26,17 @@ const Home = () => {
     }
   };
 
+  // abrir el formulario/ componente de edición
+  const openEdit = () => {
+    setShowEdit(true);
+  };
 
-const handleEditUser = (updatedData) => {
-  setProfileData(updatedData); // actualiza el estado con los nuevos datos
-  setShowEdit(false); // oculta el formulario de edición
-};
+  // recibir los datos actualizados desde EditarPerfil
+  const handleEditSuccess = (updatedData) => {
+    // asegurarse que updatedData sea un objeto plano (no evento)
+    setProfileData(updatedData);
+    setShowEdit(false);
+  };
 
   const handleDelete = async () => {
     if (!profileData) return;
@@ -55,14 +61,13 @@ const handleEditUser = (updatedData) => {
           Obtener Perfil
         </button>
 
-
         <div className="flex gap-4">
           <button
-          onClick={handleEditUser}
-          className="flex-1 bg-red-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
-          disabled={!profileData}
+            onClick={openEdit}
+            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
+            disabled={!profileData}
           >
-          Editar Perfil
+            Editar Perfil
           </button>
 
           <button
@@ -74,7 +79,7 @@ const handleEditUser = (updatedData) => {
           </button>
         </div>
 
-        {showEdit && profileData && (
+        {showEdit && (
           <div className="mt-6">
             <EditarPerfil user={profileData} onSuccess={handleEditSuccess} />
           </div>

@@ -20,7 +20,7 @@ const EditarPerfil = () => {
 
       const text = await response.text();
       const data = JSON.parse(text);
-      setProfileData(data.data);
+      //setProfileData(data.data);
       console.log("Perfil editado:", data.data);
     } catch (error) {
       console.log("Error al conectar con el servidor", error.message);
