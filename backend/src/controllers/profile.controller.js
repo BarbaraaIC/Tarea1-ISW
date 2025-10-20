@@ -11,7 +11,7 @@ export function getPublicProfile(req, res) {
 
 export async function getPrivateProfile(req, res) {
   try{
-    const userEmail = req.user.email; // extraído del token
+    const userEmail = req.user.email;
 
     const userRepository = AppDataSource.getRepository(User);
     const user = await userRepository.findOneBy({ email: userEmail });
@@ -19,11 +19,9 @@ export async function getPrivateProfile(req, res) {
     if (!user) {
       return handleErrorClient(res, 404, "Usuario no encontrado");
     }
-
-    // ⚠️ Solo para pruebas: incluir contraseña si es necesario
     handleSuccess(res, 200, "Perfil privado obtenido exitosamente", {
       email: user.email,
-      password: user.password, // solo si estás seguro de mostrarla
+      password: user.password,
     });
   }catch(error){
     console.error(error);
@@ -33,6 +31,7 @@ export async function getPrivateProfile(req, res) {
 
 export async function updateProfile(req, res) {
     try{
+    console.log("Cuerpo de la solicitud:", req.body);
     const userID = req.user.id;
     const { email, password } = req.body;
 
