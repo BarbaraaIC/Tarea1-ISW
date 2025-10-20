@@ -11,7 +11,7 @@ export async function getProfile() {
 
 export async function editProfile(){
     try{
-        const response = await axios.patch('/profile/private');
+        const response = await axios.patch('/profile/private/update');
         return response.data;
     }catch(error){
         return error.response?.data || { message: 'Error al editar perfil' };

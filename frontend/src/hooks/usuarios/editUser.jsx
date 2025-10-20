@@ -9,18 +9,17 @@ const EditarPerfil = () => {
 
   const handleEditUser = async () => {
     try {
-      const response = await fetch(apiUrl + "/profile/private", {
+      const response = await fetch(apiUrl + "/profile/private/update", {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(profileData),
+        body: JSON.stringify({ correo: email, password: password }),
       });
 
       const text = await response.text();
       const data = JSON.parse(text);
-      //setProfileData(data.data);
       console.log("Perfil editado:", data.data);
     } catch (error) {
       console.log("Error al conectar con el servidor", error.message);
