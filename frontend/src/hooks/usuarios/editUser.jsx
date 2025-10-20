@@ -1,4 +1,6 @@
 import { useState} from 'react';
+import Cookies from 'js-cookie';
+
 
 const EditarPerfil = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
@@ -9,18 +11,22 @@ const EditarPerfil = () => {
 
   const handleEditUser = async () => {
     try {
+      console.log("Token enviado:", localStorage.getItem("token"));
       const response = await fetch(apiUrl + "/profile/private/update", {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${Cookies.get("jwt-auth")}`
+
         },
-        body: JSON.stringify({ correo: email, password: password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       const text = await response.text();
       const data = JSON.parse(text);
-      console.log("Perfil editado:", data.data);
+
+      console.log ("Respuesta del servidor:", data);
+      console.log("Perfil editado:", data);
     } catch (error) {
       console.log("Error al conectar con el servidor", error.message);
     }
