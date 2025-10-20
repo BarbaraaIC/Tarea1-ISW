@@ -11,7 +11,6 @@ const EditarPerfil = () => {
 
   const handleEditUser = async () => {
     try {
-      console.log("Token enviado:", localStorage.getItem("token"));
       const response = await fetch(apiUrl + "/profile/private/update", {
         method: 'PATCH',
         headers: {

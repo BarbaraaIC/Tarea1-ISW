@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditarPerfil from '@hooks/usuarios/editUser';
-import deleteUser from '@hooks/usuarios/deleteUser';
+import DeleteUserRequest from '@hooks/usuarios/deleteUserRequest';
 
 const Home = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
@@ -36,9 +36,10 @@ const Home = () => {
     setShowEdit(false);
   };
 
-  const handleDelete = async () => {
+
+  const handleDeleteUser = async () => {
     try {
-      const result = await deleteUser();
+      const result = await DeleteUserRequest();
       console.log ("Perfil eliminado exitosamente", result);
     } catch (error) {
       console.error("Error al eliminar perfil:", error);
@@ -65,19 +66,23 @@ const Home = () => {
             Editar Perfil
           </button>
 
-          <button
-            onClick={handleDelete}
+        <button
+            onClick={handleDeleteUser}
             className="flex-1 bg-red-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
           >
             Eliminar Perfil
           </button>
+        
         </div>
 
         {showEdit && (
           <div className="mt-6">
             <EditarPerfil user={profileData} onSuccess={handleEditSuccess} />
           </div>
+          
         )}
+      
+
 
         {profileData && (
           <div className="mt-8 bg-gray-50 rounded-xl p-6 border border-gray-200">
