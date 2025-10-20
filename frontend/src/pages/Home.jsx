@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditarPerfil from '@hooks/usuarios/editUser';
-import { deleteUser } from '@hooks/usuarios/deleteUser';
+import deleteUser from '@hooks/usuarios/deleteUser';
 
 const Home = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
@@ -26,27 +26,22 @@ const Home = () => {
     }
   };
 
-  // abrir el formulario/ componente de edición
   const openEdit = () => {
     setShowEdit(true);
   };
 
-  // recibir los datos actualizados desde EditarPerfil
+
   const handleEditSuccess = (updatedData) => {
-    // asegurarse que updatedData sea un objeto plano (no evento)
     setProfileData(updatedData);
     setShowEdit(false);
   };
 
   const handleDelete = async () => {
-    if (!profileData) return;
     try {
-      await deleteUser(profileData.id || profileData._id || profileData.correo);
-      setProfileData(null);
-      alert("Perfil eliminado");
+      const result = await deleteUser();
+      console.log ("Perfil eliminado exitosamente", result);
     } catch (error) {
       console.error("Error al eliminar perfil:", error);
-      alert('No se pudo eliminar el perfil');
     }
   };
 
@@ -72,7 +67,6 @@ const Home = () => {
 
           <button
             onClick={handleDelete}
-            disabled={!profileData}
             className="flex-1 bg-red-600 text-white font-bold py-3 px-4 rounded-xl disabled:opacity-50"
           >
             Eliminar Perfil
