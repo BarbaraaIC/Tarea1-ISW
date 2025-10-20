@@ -2,6 +2,7 @@
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../Handlers/responseHandlers.js";
 import { User } from "../entities/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
+import bcrypt from "bcrypt";
 
 export function getPublicProfile(req, res) {
   handleSuccess(res, 200, "Perfil público obtenido exitosamente", {
@@ -30,6 +31,7 @@ export async function getPrivateProfile(req, res) {
 }
 
 export async function updateProfile(req, res) {
+  console.log("entrandoa a ctualzuar:")
     try{
     console.log("Cuerpo de la solicitud:", req.body);
     const userID = req.user.id;
@@ -54,7 +56,8 @@ export async function updateProfile(req, res) {
       }
 
       if(password){
-        user.password = password;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
       }
       await userRepository.save(user);
       res.status(200).json({ message: "Perfil actualizado exitosamente", user });
@@ -65,11 +68,12 @@ export async function updateProfile(req, res) {
   }
 }
 export async function deleteProfile(req, res) {
+  console.log("eliminando perfil:")
   try{
     const userRepository = AppDataSource.getRepository(User);
-    const userID = req.user.sub;
+    const userID = req.user.id;
     const user = await userRepository.findOneBy({ id: userID });
-
+    console.log("user id " + userID)
     if(!user){
       return handleErrorClient(res, 404, "Usuario no encontrado");
     }
